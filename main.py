@@ -18,7 +18,7 @@ def terminate():
     sys.exit()
 
 
-def level_render(W, H, sc, map):
+def level_render(W, H, sc, map):  # Создания окна уровня
     clock = pygame.time.Clock()
     fps = 60
     left, right, up = False, False, False
@@ -26,7 +26,7 @@ def level_render(W, H, sc, map):
     pygame.display.set_caption('Dangeon Hero')
     pygame.init()
 
-    def generate_level(level):
+    def generate_level(level):  # Функция создания классов текстур
         new_player, x, y = None, None, None
         for y in range(len(level)):
             for x in range(len(level[y])):
@@ -68,7 +68,7 @@ def level_render(W, H, sc, map):
                     Tile('fire', x, y)
         return x, y, level
 
-    def killer():
+    def killer():  # Завершение процессов окна, чистка кеша
         for i in player_group:
             i.kill()
         for i in enemies_group:
@@ -82,19 +82,21 @@ def level_render(W, H, sc, map):
         for i in fires_group:
             i.kill()
 
-    stbar = StatusBar(3, sc)
-    level_x, level_y, levvel = generate_level(load_level(map))
+    stbar = StatusBar(3, sc)  # создания статусбара
+    level_x, level_y, levvel = generate_level(load_level(map))  # параметьры карты
     total_level_width = len(levvel[0]) * tile_width  # Высчитываем фактическую ширину уровня
     total_level_height = len(levvel) * tile_height  # высоту
 
-    bacgr = load_image('background1.png')
-    camera = Camera(camera_configure, total_level_width, total_level_height)
-    pygame.mouse.set_visible(False)
+    bacgr = load_image('background1.png')  # Фон
+    camera = Camera(camera_configure, total_level_width, total_level_height)  # Создание камеры
+    pygame.mouse.set_visible(False)  # Отключение курсора
     while 1:
         for i in pygame.event.get():
             if i.type == pygame.QUIT:
                 pygame.mouse.set_visible(True)
                 terminate()
+            # Ожидания действий игрока
+            # Перемещение героя
             if i.type == pygame.KEYDOWN and i.key == pygame.K_UP:
                 up = True
             if i.type == pygame.KEYUP and i.key == pygame.K_UP:
@@ -109,6 +111,7 @@ def level_render(W, H, sc, map):
                 left = True
             if i.type == pygame.KEYUP and i.key == pygame.K_LEFT:
                 left = False
+                # Вход в окно паузы
             if i.type == pygame.KEYDOWN and i.key == pygame.K_ESCAPE:
                 pygame.mouse.set_visible(True)
                 up, left, right = False, False, False
@@ -122,23 +125,28 @@ def level_render(W, H, sc, map):
                 pygame.mouse.set_visible(False)
         pygame.display.flip()
         sc.blit(bacgr, (0, 0))
+        # Отображение камеры
         for e in all_sprites:
             sc.blit(e.image, camera.apply(e))
         for i in player_group:
+            # Проверка смерти
             if i.hp == 0:
-                game_over(W,H, sc, 'game_over.png')
+                # Окно смерти героя
+                game_over(W, H, sc, 'game_over.png')
                 killer()
                 pygame.mouse.set_visible(True)
                 return 'stop'
             stbar.set_params(i.hp, i.diamonds_count, i.kills)
             camera.update(i)
         for i in player_group:
+            # Открытия окна победы
             if i.win:
                 game_over(W, H, sc, 'win.png', (stbar.enemies, stbar.diamonds))
                 killer()
                 pygame.mouse.set_visible(True)
                 return 'stop'
             if i.read:
+                # Открытие инструкции в обучении
                 print(i.read)
                 hello(W, H, sc, 'hello.png')
                 i.read = False
@@ -150,8 +158,3 @@ def level_render(W, H, sc, map):
         player_group.update(left, right, up)
         enemies_group.update()
         clock.tick(fps)
-
-# W = 1000
-# H = 510
-# sc = pygame.display.set_mode((W, H))
-# level_render(1000, 510, sc, 'level.txt')

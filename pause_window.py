@@ -7,14 +7,14 @@ clock = pygame.time.Clock()
 fps = 60
 
 
-def peresech(x, y, tupl):
+def peresech(x, y, tupl):  # Проверка нажатия на кнопки
     return tupl[0] <= x <= tupl[2] and tupl[1] <= y <= tupl[3]
 
 
-def pause(W, H, sc):
+def pause(W, H, sc):  # Создания окна паузы
     fon = pygame.transform.scale(load_image('pause.png'), (W, H))
     sc.blit(fon, (0, 0))
-    buts = [(360, 185, 718, 235), (360, 255, 718, 305), (360, 325, 718, 375)]
+    buts = [(360, 185, 718, 235), (360, 255, 718, 305), (360, 325, 718, 375)]  # Кнопки
 
     while True:
         for event in pygame.event.get():
@@ -23,6 +23,7 @@ def pause(W, H, sc):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 return  # начинаем игру
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Ожидание нажатия на кнопку
                 if peresech(event.pos[0], event.pos[1], buts[0]):
                     return 'menu'
                 elif peresech(event.pos[0], event.pos[1], buts[1]):

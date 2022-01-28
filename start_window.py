@@ -11,35 +11,35 @@ H = 510
 sc = pygame.display.set_mode((W, H))
 
 
-def peresech(x, y, tupl):
+def peresech(x, y, tupl):  # Функция проверки нажатия кнопки
     return tupl[0] <= x <= tupl[2] and tupl[1] <= y <= tupl[3]
 
 
 def start():
-    fon = pygame.transform.scale(load_image('start.png'), (W, H))
+    fon = pygame.transform.scale(load_image('start.png'), (W, H))  # Создание основного окна
     sc.blit(fon, (0, 0))
     buts = [(448, 187, 601, 242), (340, 291, 703, 394)]
     start = False
     map = ''
-    while True:
+    while True:  # Главный цикл сосновного окна
         sc.blit(fon, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN or start:
+            if event.type == pygame.MOUSEBUTTONDOWN or start:  # Загрузка уровня после колбэка
                 if start:
                     callback = level_render(W, H, sc, map)
                     start = False
                     if callback != 'stop':
                         start = True
                         map = callback
-                elif peresech(event.pos[0], event.pos[1], buts[0]):
+                elif peresech(event.pos[0], event.pos[1], buts[0]):  # Загрузка обучения
                     callback = level_render(W, H, sc, 'learning.txt')
                     if callback != 'stop':
                         start = True
                         map = callback
                 elif peresech(event.pos[0], event.pos[1], buts[1]):
-                    callback = level_render(W, H, sc, 'level.txt')
+                    callback = level_render(W, H, sc, 'level.txt')  # Загрузка уровня
                     if callback != 'stop':
                         start = True
                         map = callback
